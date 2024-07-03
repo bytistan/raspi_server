@@ -21,7 +21,7 @@ def order_response(data):
     else:
         print("[-] Failed to send data.")
 
-sio.connect("http://localhost:5000", auth={"password": password})
+sio.connect("http://192.168.137.248:5000", auth={"password": password})
 
 sio.emit("_235", {"order": 0})
 

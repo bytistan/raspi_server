@@ -7,7 +7,7 @@ import hashlib
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret!"
 socketio = SocketIO(app)
-# controller = Controller()
+controller = Controller()
 
 VALID_PASSWORD_HASH = hashlib.sha256("__h0m0l__".encode()).hexdigest()
 
@@ -31,6 +31,11 @@ def handle_disconnect():
 @socketio.on("_235")
 def handle_order(data):
     print("[+] Received order:", data)
+    order = data.get("order") 
+
+    if order:
+        controller.updated(data.get("order"),data.get("speed"))
+        
     emit("_l235", {"status": 200})
 
 if __name__ == "__main__":

@@ -52,7 +52,7 @@ class Controller:
         self.motor_sw.stop()
         self.motor_se.stop()
 
-    def update(self, order ,speed):
+    def update(self, order ,speed=0):
         if order == 0:
             self.stop()
         elif order == 1:
