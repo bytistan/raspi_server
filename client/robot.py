@@ -21,8 +21,15 @@ def order_response(data):
     else:
         print("[-] Failed to send data.")
 
-sio.connect("http://192.168.137.248:5000", auth={"password": password})
+if __name__ == "__main__":
+    try:
+        sio.connect("http://192.168.137.248:5000", auth={"password": password})
 
-sio.emit("_235", {"order": 0})
+        sio.emit("_235", {"order": 0})
 
-sio.wait()
+        sio.wait()
+    except KeyboardInterrupt:
+        print("[-] Quit")
+    except Exception as e:
+        print("[-] Error : {e}")
+

