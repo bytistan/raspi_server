@@ -1,52 +1,86 @@
+from pynput import keyboard
 import socketio
-import keyboard
-import hashlib
+from termcolor import colored
 
 password = "__h0m0l__"
 sio = socketio.Client()
 
-speed = 30
+speed = 40
+order = 0
+
+flag = True 
 
 cont_data = {
-        "w":1,
-        "s":2,
-        "a":4,
-        "d":3,
-        "q":5,
-        "e"6
+    "w": 1,
+    "s": 2,
+    "a": 4,
+    "d": 3,
+    "q": 5,
+    "e": 6
 }
 
 @sio.event
 def connect():
-    print("[+] Connected to server")
+    print(colored("[+] Connected to server", "green" ,attrs=["bold"]))
 
 @sio.event
 def disconnect():
-    print("[-] Disconnected from server")
+    print(colored("[-] Disconnected from server", "red",attrs=["bold"]))
 
-def send_keypress():
-    def on_key_event(e):
-        key = e.name
-        if key == "u" and speed < 100:
-           speed += 5 
-        if key == "j" and speed > 20:
+def on_key_event(key):
+    global speed
+    global order
+    global flag 
+
+    try:
+        key_name = key.char
+        print(colored(f"[INFO] Key pressed: {key_name}", "green",attrs=["bold"]))
+
+        if key_name == "u" and speed < 100:
+            speed += 5 
+            print(colored(f"[INFO] Speed (+) : {speed}", "green",attrs=["bold"]))
+        if key_name == "j" and speed > 20:
             speed -= 5
+            print(colored(f"[INFO] Speed (-) : {speed}", "red",attrs=["bold"]))
 
-        if cont_data.get(key):
-            sio.emit("_235", {"order": cont_data.get(key) "speed":speed}, namespace="/")
-            print(f"[+] : {cont_data.get(key)}")
-        else:
-            sio.emit("_235", {"key": 0}, namespace="/")
+        if cont_data.get(key_name) and flag:
+            flag = False 
+            order = cont_data.get(key_name)
+            sio.emit("_235", {"order": order, "speed": speed}, namespace="/")
+            print(colored(f"[INFO] Order sent: {order}, Speed: {speed}", "green" ,attrs=["bold"]))
+    except AttributeError:
+        pass
 
-    keyboard.on_press(on_key_event)
-    keyboard.wait("esc")  
+def on_key_release(key):
+    global order
+    global flag 
+    global speed 
+
+    try:
+        key_name = key.char
+        print(colored(f"[INFO] Key released: {key_name}", "yellow"))
+
+        if not flag:
+            flag = True 
+
+        if order != 0:
+            order = 0
+            sio.emit("_235", {"order": order, "speed": speed}, namespace="/")
+            print(colored(f"[INFO] Order sent: {order}, Speed: {speed}", "yellow"))
+    except AttributeError:
+        pass
 
 if __name__ == "__main__":
     try:
-        sio.connect("http://192.168.137.248:5000", auth={"password": password})
-        send_keypress()
+        print("[INFO] Connecting to server...")
+        sio.connect("http://192.168.32.215:5001", auth={"password": password})
+
+        listener = keyboard.Listener(on_press=on_key_event, on_release=on_key_release)
+        listener.start()
+        listener.join()
+
         sio.disconnect()
     except KeyboardInterrupt:
-        print("[-] Quit")
+        print("[-] bye :)")
     except Exception as e:
-        print(f"[-] Error : {e}")
+        print(f"[-] Error: {e}")

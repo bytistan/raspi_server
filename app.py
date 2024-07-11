@@ -2,7 +2,7 @@
 from flask import Flask
 from flask_socketio import SocketIO, emit, disconnect
 import hashlib
-# from engine.controller import Controller 
+from engine.controller import Controller 
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret!"
