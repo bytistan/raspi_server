@@ -34,7 +34,6 @@ def on_key_event(key):
 
     try:
         key_name = key.char
-        print(colored(f"[INFO] Key pressed: {key_name}", "green",attrs=["bold"]))
 
         if key_name == "u" and speed < 100:
             speed += 5 
@@ -47,6 +46,7 @@ def on_key_event(key):
             flag = False 
             order = cont_data.get(key_name)
             sio.emit("_235", {"order": order, "speed": speed}, namespace="/")
+            print(colored(f"[INFO] Key pressed: {key_name}", "green",attrs=["bold"]))
             print(colored(f"[INFO] Order sent: {order}, Speed: {speed}", "green" ,attrs=["bold"]))
     except AttributeError:
         pass
@@ -81,6 +81,6 @@ if __name__ == "__main__":
 
         sio.disconnect()
     except KeyboardInterrupt:
-        print("[-] bye :)")
+        print("bye :)")
     except Exception as e:
         print(f"[-] Error: {e}")
