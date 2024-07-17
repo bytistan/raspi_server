@@ -5,6 +5,8 @@ from .pins import *
 class Controller:
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+
         self.motor_nw = Motor(NW_PIN_FW, NW_PIN_BW, NW_PIN_PWM)
         self.motor_ne = Motor(NE_PIN_FW, NE_PIN_BW, NE_PIN_PWM)
         self.motor_sw = Motor(SW_PIN_FW, SW_PIN_BW, SW_PIN_PWM)

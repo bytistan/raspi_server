@@ -34,9 +34,9 @@ def handle_order(data):
     order = data.get("order") 
 
     if order:
-        controller.updated(data.get("order"),data.get("speed"))
+        controller.update(data.get("order"),data.get("speed"))
         
     emit("_l235", {"status": 200})
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    socketio.run(app, host="0.0.0.0", debug=True, port=5001)
